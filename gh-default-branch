@@ -1,3 +1,19 @@
-#!/usr/bin/env bash
+#!/bin/bash
 set -e
-git remote show origin | grep 'HEAD branch' | awk '{print $NF}'
+
+repo="daido1976/gh-default-branch"
+exe="gh-default-branch"
+extensionPath="$(dirname "$0")"
+
+# Change tag when releasing a new version
+# TODO: Keep version control in a separate file so that it is automatically updated upon release.
+tag="v0.1"
+
+if [[ ! -x "${extensionPath}/bin/${exe}" ]]; then
+  mkdir -p "${extensionPath}/bin"
+  rm -f "${extensionPath}/bin/*"
+  gh release -R"${repo}" download "${tag}" -p "${exe}" --dir="${extensionPath}/bin"
+  chmod +x "${extensionPath}/bin/${exe}"
+fi
+
+exec "${extensionPath}/bin/${exe}" "$@"
