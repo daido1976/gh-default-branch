@@ -1,3 +1,3 @@
 #!/usr/bin/env bash
 set -e
-exec gh api user --jq '"You are @\(.login) (\(.name))."'
+git remote show origin | grep 'HEAD branch' | awk '{print $NF}'
