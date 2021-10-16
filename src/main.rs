@@ -7,16 +7,15 @@ fn main() {
 }
 
 fn run(args: Vec<String>) {
-    if let Some(first_arg) = args.get(1) {
-        if first_arg == "show" {
-            cmd::show();
-        } else if first_arg == "rename" {
-            cmd::rename();
-        } else {
-            cmd::help();
-        }
-    } else {
-        // when passed no args
-        cmd::help();
+    match args.get(1) {
+        Some(first_arg) if first_arg == "show" => cmd::show(),
+        Some(first_arg) if first_arg == "rename" => match args.get(2) {
+            Some(to_name) => cmd::rename(to_name),
+            None => {
+                println!("USAGE: 'gh default-branch rename <name>' Please specify the name.")
+            }
+        },
+        // when passed no args, or the wrong args.
+        _ => cmd::help(),
     }
 }

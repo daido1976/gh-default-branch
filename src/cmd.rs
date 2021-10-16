@@ -18,7 +18,7 @@ pub fn show() {
     println!("{}", output);
 }
 
-pub fn rename() {
+pub fn rename(_name: &str) {
     println!("unimplemented rename command!");
 }
 
