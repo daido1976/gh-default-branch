@@ -1,23 +1,22 @@
-use std::process::Command;
+mod cmd;
+use std::env;
 
 fn main() {
-    run()
+    let args: Vec<String> = env::args().collect();
+    run(args)
 }
 
-fn run() {
-    let output = Command::new("git")
-        .args(["remote", "show", "origin"])
-        .output()
-        .expect("Failed to execute command");
-    let output = String::from_utf8_lossy(&output.stdout).trim().to_string();
-    let output = output
-        .lines()
-        .find(|line| line.contains("HEAD branch"))
-        .expect("Failed to find HEAD branch");
-    let output = output
-        .split_whitespace()
-        .last()
-        .expect("Failed to fetch last element");
-
-    println!("{}", output);
+fn run(args: Vec<String>) {
+    if let Some(first_arg) = args.get(1) {
+        if first_arg == "show" {
+            cmd::show();
+        } else if first_arg == "rename" {
+            cmd::rename();
+        } else {
+            cmd::help();
+        }
+    } else {
+        // when passed no args
+        cmd::help();
+    }
 }
