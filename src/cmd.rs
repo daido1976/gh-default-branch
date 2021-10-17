@@ -1,4 +1,4 @@
-use std::process::Command;
+use std::process::{Command, Output};
 
 pub fn show() {
     let default_branch = get_default_branch();
@@ -25,10 +25,7 @@ pub fn help() {
 }
 
 fn get_default_branch() -> String {
-    let output = Command::new("git")
-        .args(["remote", "show", "origin"])
-        .output()
-        .expect("Failed to execute command");
+    let output = git(&["remote", "show", "origin"]);
     let output = String::from_utf8_lossy(&output.stdout).trim().to_string();
     let output = output
         .lines()
@@ -43,10 +40,7 @@ fn get_default_branch() -> String {
 
 fn fetch_origin(branch: &str) {
     println!("$ git fetch origin {}", branch);
-    let output = Command::new("git")
-        .args(["fetch", "origin", branch])
-        .output()
-        .expect("Failed to execute command");
+    let output = git(&["fetch", "origin", branch]);
     // git outputs the fetch and push logs to stderr...
     // See. https://stackoverflow.com/questions/57016157/stop-git-from-writing-non-errors-to-stderr
     let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
@@ -58,34 +52,30 @@ fn fetch_origin(branch: &str) {
 fn push_new_branch(from: &str, to: &str) {
     // masterブランチからmainブランチを強制的に分岐させる
     println!("$ git checkout -B {} origin/{} --no-track", to, from);
-    let output = Command::new("git")
-        .args([
-            "checkout",
-            "-B",
-            to,
-            &format!("origin/{}", from),
-            "--no-track",
-        ])
-        .output()
-        .expect("Failed to execute command");
+    let output = git(&[
+        "checkout",
+        "-B",
+        to,
+        &format!("origin/{}", from),
+        "--no-track",
+    ]);
     let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
     println!("{}", output);
+    // handle error
+    // TODO: Use Result instead of panic!
+    output
+        .starts_with("error:")
+        .then(|| panic!("Exit the program because the git command failed!"));
 
     // mainブランチをリモートにプッシュ
     println!("$ git push -u origin {}", to);
-    let output = Command::new("git")
-        .args(["push", "-u", "origin", to])
-        .output()
-        .expect("Failed to execute command");
+    let output = git(&["push", "-u", "origin", to]);
     let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
     println!("{}", output);
 
     // リポジトリのHEADをmainブランチに切り替え
     println!("$ git remote set-head origin {}", to);
-    let output = Command::new("git")
-        .args(["remote", "set-head", "origin", to])
-        .output()
-        .expect("Failed to execute command");
+    let output = git(&["remote", "set-head", "origin", to]);
     let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
     println!("{}", output);
 }
@@ -106,4 +96,11 @@ fn rename_default_branch(to: &str) {
     println!("default branch is updated!");
 
     // GitHub上の全てのPRのbase branchもmainブランチに切り替え
+}
+
+fn git(args: &[&str]) -> Output {
+    Command::new("git")
+        .args(args)
+        .output()
+        .expect("Failed to execute command")
 }
