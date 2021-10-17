@@ -6,7 +6,7 @@ pub fn show() {
     println!("Current default branch is \"{}\"", default_branch,);
 }
 
-// TODO: 副作用の大きいコマンドなので対話式にする
+// TODO: Make it interactive because this is a command with a lot of side effects.
 pub fn rename(to_branch: &str) {
     let repo_name_with_owner = get_repo_name_with_owner();
     let from_branch = get_default_branch(&repo_name_with_owner);
@@ -65,7 +65,7 @@ fn fetch_origin(branch: &str) {
 /// * `from` - e.g. master
 /// * `to` - e.g. main
 fn push_new_branch(from: &str, to: &str) {
-    // masterブランチからmainブランチを強制的に分岐させる
+    // Force a branch from old branch to new branch.
     println!("$ git checkout -B {} origin/{} --no-track", to, from);
     let output = git(&[
         "checkout",
@@ -82,13 +82,13 @@ fn push_new_branch(from: &str, to: &str) {
         .starts_with("error:")
         .then(|| panic!("Exit the program because the git command failed!"));
 
-    // mainブランチをリモートにプッシュ
+    // Push the new branch to the remote.
     println!("$ git push -u origin {}", to);
     let output = git(&["push", "-u", "origin", to]);
     let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
     println!("{}", output);
 
-    // リポジトリのHEADをmainブランチに切り替え
+    // Set the repository HEAD to the new branch.
     println!("$ git remote set-head origin {}", to);
     git(&["remote", "set-head", "origin", to]);
     println!("Set HEAD to {}", to);
@@ -98,13 +98,12 @@ fn rename_default_branch(from: &str, to: &str, repo: &str) {
     let repo = &format!("repos/{}", repo);
     let default_branch = &format!("default_branch={}", to);
 
-    // GitHub上のデフォルトブランチをmainブランチに切り替え
-    // gh api -X PATCH "repos/${REPO}" -f default_branch=main
+    // Rename the default branch on GitHub to the new branch.
     println!("$ gh api -X PATCH {} -f {}", repo, default_branch);
     gh(&["api", "-X", "PATCH", repo, "-f", default_branch]);
     println!("Default branch is renamed to {}!", to);
 
-    // GitHub上の全てのPRのbase branchもmainブランチに切り替え
+    // Switch the base branch of all PRs on GitHub to the new branch.
     // gh pr list -B master -L999 --json number --jq '.[].number'
     let output = gh(&[
         "pr",
@@ -122,7 +121,6 @@ fn rename_default_branch(from: &str, to: &str, repo: &str) {
     for num in pr_numbers {
         let target_pr = &format!("{}/pulls/{}", repo, num);
         let base_branch = &format!("base={}", to);
-        // gh api -X PATCH "repos/:owner/:repo/pulls/${num}" -f base="$newbranch"
         println!("$ gh api -X PATCH {} -f {}", target_pr, base_branch);
         gh(&["api", "-X", "PATCH", target_pr, "-f", base_branch]);
     }
@@ -130,13 +128,13 @@ fn rename_default_branch(from: &str, to: &str, repo: &str) {
 }
 
 fn delete_old_branch(branch: &str) {
-    // Gitのリモートリポジトリからmasterブランチを削除
+    // Delete the old branch from the remote Git repository.
     println!("$ git push --delete origin {}", branch);
     let output = git(&["push", "--delete", "origin", branch]);
     let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
     println!("{}", output);
 
-    // ローカルのmasterブランチは必要があれば消してください
+    // (Optional) Delete the local old branch.
     // println!("$ git branch -D {}", branch);
     // let output = git(&["branch", "-D", branch]);
     // let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
