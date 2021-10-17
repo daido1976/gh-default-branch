@@ -2,11 +2,9 @@
 
 GitHub CLI extension to show & rename the default branch.
 
-`rename` subcommand was inspired by the following gist.
+`rename` subcommand was inspired by [this gist](https://gist.github.com/mislav/5ac69530acbe1b4ca909e272caabfdba).
 
-[Rename the default branch of a repository using GitHub CLI https://github\.com/cli/cli/releases/tag/v0\.10\.0](https://gist.github.com/mislav/5ac69530acbe1b4ca909e272caabfdba)
-
-### Caution
+### ⚠️ Caution
 
 The `rename` subcommand is missing some features.
 
