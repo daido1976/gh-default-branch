@@ -2,6 +2,7 @@
 set -e
 
 tag="${1}"
+cargoOutput="./target/release/gh-default-branch"
 
 if [ "${tag}" == "" ]; then
   echo "tag argument required"
@@ -9,4 +10,5 @@ if [ "${tag}" == "" ]; then
 fi
 
 cargo build --release
-gh release create $tag ./target/release/gh-default-branch --title="${tag}" --notes "${tag}"
+mv "${cargoOutput}" "${cargoOutput}-${tag}"
+gh release create "$tag" "${cargoOutput}-${tag}" --title="${tag}" --notes "${tag}"
