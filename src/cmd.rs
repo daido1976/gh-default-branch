@@ -24,33 +24,8 @@ pub fn rename(to_branch: &str) {
     );
 }
 
-fn delete_old_branch(branch: &str) {
-    // Gitのリモートリポジトリからmasterブランチを削除
-    println!("$ git push --delete origin {}", branch);
-    let output = git(&["push", "--delete", "origin", branch]);
-    let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
-    println!("{}", output);
-
-    // ローカルのmasterブランチは必要があれば消してください
-    // println!("$ git branch -D {}", branch);
-    // let output = git(&["branch", "-D", branch]);
-    // let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
-    // println!("{}", output);
-}
-
 pub fn help() {
     println!("TODO: show help message");
-}
-
-fn get_default_branch(repo_name_with_owner: &str) -> String {
-    // gh api "repos/daido1976/gh-default-branch" --jq '.default_branch'
-    let output = gh(&[
-        "api",
-        &format!("repos/{}", repo_name_with_owner),
-        "--jq",
-        ".default_branch",
-    ]);
-    String::from_utf8_lossy(&output.stdout).trim().to_string()
 }
 
 /// e.g. daido1976/gh-default-branch
@@ -63,6 +38,17 @@ fn get_repo_name_with_owner() -> String {
         "nameWithOwner",
         "--jq",
         ".nameWithOwner",
+    ]);
+    String::from_utf8_lossy(&output.stdout).trim().to_string()
+}
+
+fn get_default_branch(repo_name_with_owner: &str) -> String {
+    // gh api "repos/daido1976/gh-default-branch" --jq '.default_branch'
+    let output = gh(&[
+        "api",
+        &format!("repos/{}", repo_name_with_owner),
+        "--jq",
+        ".default_branch",
     ]);
     String::from_utf8_lossy(&output.stdout).trim().to_string()
 }
@@ -142,6 +128,20 @@ fn rename_default_branch(from: &str, to: &str, repo: &str) {
         gh(&["api", "-X", "PATCH", target_pr, "-f", base_branch]);
     }
     println!("All PR's base branch are updated!");
+}
+
+fn delete_old_branch(branch: &str) {
+    // Gitのリモートリポジトリからmasterブランチを削除
+    println!("$ git push --delete origin {}", branch);
+    let output = git(&["push", "--delete", "origin", branch]);
+    let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
+    println!("{}", output);
+
+    // ローカルのmasterブランチは必要があれば消してください
+    // println!("$ git branch -D {}", branch);
+    // let output = git(&["branch", "-D", branch]);
+    // let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
+    // println!("{}", output);
 }
 
 fn git(args: &[&str]) -> Output {
