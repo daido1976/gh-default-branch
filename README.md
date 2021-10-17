@@ -34,8 +34,38 @@ $ gh extension install daido1976/gh-default-branch
 ```sh
 # Show default branch
 $ gh default-branch show
+# Current default branch is "master"
+
 # Rename default branch
 $ gh default-branch rename main
+# The following execution log will be output.
+#
+# === START: Rename from master to main ===
+# $ git fetch origin master
+# From https://github.com/daido1976/gh-default-branch
+#  * branch            master     -> FETCH_HEAD
+# $ git checkout -B main origin/master --no-track
+# Switched to and reset branch 'main'
+# $ git push -u origin main
+# remote:
+# remote: Create a pull request for 'main' on GitHub by visiting:
+# remote:      https://github.com/daido1976/gh-default-branch/pull/new/main
+# remote:
+# remote: Heads up! The branch 'main' that you pushed to was renamed to 'master'.
+# remote:
+# To https://github.com/daido1976/gh-default-branch.git
+#  * [new branch]      main -> main
+# $ git remote set-head origin main
+# Set HEAD to main
+# $ gh api -X PATCH repos/daido1976/gh-default-branch -f default_branch=main
+# Default branch is renamed to main!
+# $ gh api -X PATCH repos/daido1976/gh-default-branch/pulls/2 -f base=main
+# $ gh api -X PATCH repos/daido1976/gh-default-branch/pulls/1 -f base=main
+# All PR's base branch are updated!
+# $ git push --delete origin master
+# To https://github.com/daido1976/gh-default-branch.git
+#  - [deleted]         master
+# === FINISH: Rename from master to main ===
 ```
 
 ## Release

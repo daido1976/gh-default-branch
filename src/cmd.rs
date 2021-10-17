@@ -90,9 +90,8 @@ fn push_new_branch(from: &str, to: &str) {
 
     // リポジトリのHEADをmainブランチに切り替え
     println!("$ git remote set-head origin {}", to);
-    let output = git(&["remote", "set-head", "origin", to]);
-    let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
-    println!("{}", output);
+    git(&["remote", "set-head", "origin", to]);
+    println!("Set HEAD to {}", to);
 }
 
 fn rename_default_branch(from: &str, to: &str, repo: &str) {
@@ -103,7 +102,7 @@ fn rename_default_branch(from: &str, to: &str, repo: &str) {
     // gh api -X PATCH "repos/${REPO}" -f default_branch=main
     println!("$ gh api -X PATCH {} -f {}", repo, default_branch);
     gh(&["api", "-X", "PATCH", repo, "-f", default_branch]);
-    println!("default branch is updated!");
+    println!("Default branch is renamed to {}!", to);
 
     // GitHub上の全てのPRのbase branchもmainブランチに切り替え
     // gh pr list -B master -L999 --json number --jq '.[].number'
