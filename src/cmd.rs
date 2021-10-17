@@ -14,10 +14,25 @@ pub fn rename(to_branch: &str) {
     fetch_origin(&from_branch);
     push_new_branch(&from_branch, to_branch);
     rename_default_branch(to_branch);
+    delete_old_branch(&from_branch);
     println!(
         "=== FINISH: Rename from {} to {} ===",
         from_branch, to_branch
     );
+}
+
+fn delete_old_branch(branch: &str) {
+    // Gitのリモートリポジトリからmasterブランチを削除
+    println!("$ git push --delete origin {}", branch);
+    let output = git(&["push", "--delete", "origin", branch]);
+    let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
+    println!("{}", output);
+
+    // ローカルのmasterブランチは必要があれば消してください
+    // println!("$ git branch -D {}", branch);
+    // let output = git(&["branch", "-D", branch]);
+    // let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
+    // println!("{}", output);
 }
 
 pub fn help() {
