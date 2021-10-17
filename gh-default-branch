@@ -9,11 +9,11 @@ extensionPath="$(dirname "$0")"
 # TODO: Keep version control in a separate file so that it is automatically updated upon release.
 tag="v0.1"
 
-if [[ ! -x "${extensionPath}/bin/${exe}" ]]; then
-  mkdir -p "${extensionPath}/bin"
-  rm -f "${extensionPath}/bin/*"
-  gh release -R"${repo}" download "${tag}" -p "${exe}" --dir="${extensionPath}/bin"
-  chmod +x "${extensionPath}/bin/${exe}"
+if [[ ! -x "${extensionPath}/bin/${tag}/${exe}" ]]; then
+  # TODO: Delete the previous versions.
+  mkdir -p "${extensionPath}/bin/${tag}"
+  gh release -R"${repo}" download "${tag}" -p "${exe}" --dir="${extensionPath}/bin/${tag}"
+  chmod +x "${extensionPath}/bin/${tag}/${exe}"
 fi
 
-exec "${extensionPath}/bin/${exe}" "$@"
+exec "${extensionPath}/bin/${tag}/${exe}" "$@"
