@@ -44,32 +44,26 @@ pub fn help() {
 
 fn get_default_branch(repo_name_with_owner: &str) -> String {
     // gh api "repos/daido1976/gh-default-branch" --jq '.default_branch'
-    let output = Command::new("gh")
-        .args([
-            "api",
-            &format!("repos/{}", repo_name_with_owner),
-            "--jq",
-            ".default_branch",
-        ])
-        .output()
-        .expect("Failed to execute command");
+    let output = gh(&[
+        "api",
+        &format!("repos/{}", repo_name_with_owner),
+        "--jq",
+        ".default_branch",
+    ]);
     String::from_utf8_lossy(&output.stdout).trim().to_string()
 }
 
 /// e.g. daido1976/gh-default-branch
 fn get_repo_name_with_owner() -> String {
     // gh repo view --json nameWithOwner --jq .nameWithOwner
-    let output = Command::new("gh")
-        .args([
-            "repo",
-            "view",
-            "--json",
-            "nameWithOwner",
-            "--jq",
-            ".nameWithOwner",
-        ])
-        .output()
-        .expect("Failed to execute command");
+    let output = gh(&[
+        "repo",
+        "view",
+        "--json",
+        "nameWithOwner",
+        "--jq",
+        ".nameWithOwner",
+    ]);
     String::from_utf8_lossy(&output.stdout).trim().to_string()
 }
 
@@ -122,10 +116,7 @@ fn rename_default_branch(to: &str, repo: &str) {
     // GitHub上のデフォルトブランチをmainブランチに切り替え
     // gh api -X PATCH "repos/${REPO}" -f default_branch=main
     println!("$ gh api -X PATCH {} -f {}", repo, default_branch);
-    Command::new("gh")
-        .args(["api", "-X", "PATCH", repo, "-f", default_branch])
-        .output()
-        .expect("Failed to execute command");
+    gh(&["api", "-X", "PATCH", repo, "-f", default_branch]);
     println!("default branch is updated!");
 
     // TODO: GitHub上の全てのPRのbase branchもmainブランチに切り替え
@@ -133,6 +124,13 @@ fn rename_default_branch(to: &str, repo: &str) {
 
 fn git(args: &[&str]) -> Output {
     Command::new("git")
+        .args(args)
+        .output()
+        .expect("Failed to execute command")
+}
+
+fn gh(args: &[&str]) -> Output {
+    Command::new("gh")
         .args(args)
         .output()
         .expect("Failed to execute command")
