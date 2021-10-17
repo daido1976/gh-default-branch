@@ -14,10 +14,12 @@ pub fn rename(to_branch: &str) {
         "=== START: Rename from {} to {} ===",
         from_branch, to_branch
     );
+
     fetch_origin(&from_branch);
     push_new_branch(&from_branch, to_branch);
     rename_default_branch(&from_branch, to_branch, &repo_name_with_owner);
     delete_old_branch(&from_branch);
+
     println!(
         "=== FINISH: Rename from {} to {} ===",
         from_branch, to_branch
@@ -25,7 +27,15 @@ pub fn rename(to_branch: &str) {
 }
 
 pub fn help() {
-    println!("TODO: show help message");
+    println!(
+        "Usage: gh default-branch\n\n\
+
+        Show default branch\n\
+        $ gh default-branch show\n\n\
+
+        Rename default branch\n\
+        $ gh default-branch rename <name>"
+    );
 }
 
 /// e.g. daido1976/gh-default-branch
