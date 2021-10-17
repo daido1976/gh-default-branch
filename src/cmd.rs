@@ -5,6 +5,7 @@ pub fn show() {
     println!("{}", default_branch);
 }
 
+// TODO: 副作用の大きいコマンドなので対話式にする
 pub fn rename(to_branch: &str) {
     let from_branch = get_default_branch();
     println!(
@@ -110,7 +111,7 @@ fn rename_default_branch(to: &str) {
         .expect("Failed to execute command");
     println!("default branch is updated!");
 
-    // GitHub上の全てのPRのbase branchもmainブランチに切り替え
+    // TODO: GitHub上の全てのPRのbase branchもmainブランチに切り替え
 }
 
 fn git(args: &[&str]) -> Output {
