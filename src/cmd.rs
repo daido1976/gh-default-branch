@@ -1,20 +1,22 @@
 use std::process::{Command, Output};
 
 pub fn show() {
-    let default_branch = get_default_branch();
-    println!("{}", default_branch);
+    let repo_name_with_owner = get_repo_name_with_owner();
+    let default_branch = get_default_branch(&repo_name_with_owner);
+    println!("Current default branch is \"{}\"", default_branch,);
 }
 
 // TODO: 副作用の大きいコマンドなので対話式にする
 pub fn rename(to_branch: &str) {
-    let from_branch = get_default_branch();
+    let repo_name_with_owner = get_repo_name_with_owner();
+    let from_branch = get_default_branch(&repo_name_with_owner);
     println!(
         "=== START: Rename from {} to {} ===",
         from_branch, to_branch
     );
     fetch_origin(&from_branch);
     push_new_branch(&from_branch, to_branch);
-    rename_default_branch(to_branch);
+    rename_default_branch(to_branch, &repo_name_with_owner);
     delete_old_branch(&from_branch);
     println!(
         "=== FINISH: Rename from {} to {} ===",
@@ -40,18 +42,35 @@ pub fn help() {
     println!("TODO: show help message");
 }
 
-fn get_default_branch() -> String {
-    let output = git(&["remote", "show", "origin"]);
-    let output = String::from_utf8_lossy(&output.stdout).trim().to_string();
-    let output = output
-        .lines()
-        .find(|line| line.contains("HEAD branch"))
-        .expect("Failed to find HEAD branch");
-    let output = output
-        .split_whitespace()
-        .last()
-        .expect("Failed to fetch last element");
-    output.to_string()
+fn get_default_branch(repo_name_with_owner: &str) -> String {
+    // gh api "repos/daido1976/gh-default-branch" --jq '.default_branch'
+    let output = Command::new("gh")
+        .args([
+            "api",
+            &format!("repos/{}", repo_name_with_owner),
+            "--jq",
+            ".default_branch",
+        ])
+        .output()
+        .expect("Failed to execute command");
+    String::from_utf8_lossy(&output.stdout).trim().to_string()
+}
+
+/// e.g. daido1976/gh-default-branch
+fn get_repo_name_with_owner() -> String {
+    // gh repo view --json nameWithOwner --jq .nameWithOwner
+    let output = Command::new("gh")
+        .args([
+            "repo",
+            "view",
+            "--json",
+            "nameWithOwner",
+            "--jq",
+            ".nameWithOwner",
+        ])
+        .output()
+        .expect("Failed to execute command");
+    String::from_utf8_lossy(&output.stdout).trim().to_string()
 }
 
 fn fetch_origin(branch: &str) {
@@ -96,9 +115,7 @@ fn push_new_branch(from: &str, to: &str) {
     println!("{}", output);
 }
 
-fn rename_default_branch(to: &str) {
-    // TODO: fetch dynamically
-    let repo = "daido1976/gh-default-branch";
+fn rename_default_branch(to: &str, repo: &str) {
     let repo = &format!("repos/{}", repo);
     let default_branch = &format!("default_branch={}", to);
 
