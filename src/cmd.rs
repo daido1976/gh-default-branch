@@ -16,7 +16,7 @@ pub fn rename(to_branch: &str) {
     );
     fetch_origin(&from_branch);
     push_new_branch(&from_branch, to_branch);
-    rename_default_branch(to_branch, &repo_name_with_owner);
+    rename_default_branch(&from_branch, to_branch, &repo_name_with_owner);
     delete_old_branch(&from_branch);
     println!(
         "=== FINISH: Rename from {} to {} ===",
@@ -109,7 +109,7 @@ fn push_new_branch(from: &str, to: &str) {
     println!("{}", output);
 }
 
-fn rename_default_branch(to: &str, repo: &str) {
+fn rename_default_branch(from: &str, to: &str, repo: &str) {
     let repo = &format!("repos/{}", repo);
     let default_branch = &format!("default_branch={}", to);
 
@@ -119,7 +119,29 @@ fn rename_default_branch(to: &str, repo: &str) {
     gh(&["api", "-X", "PATCH", repo, "-f", default_branch]);
     println!("default branch is updated!");
 
-    // TODO: GitHub上の全てのPRのbase branchもmainブランチに切り替え
+    // GitHub上の全てのPRのbase branchもmainブランチに切り替え
+    // gh pr list -B master -L999 --json number --jq '.[].number'
+    let output = gh(&[
+        "pr",
+        "list",
+        "-B",
+        from,
+        "-L999",
+        "--json",
+        "number",
+        "--jq",
+        ".[].number",
+    ]);
+    let output = String::from_utf8_lossy(&output.stdout).trim().to_string();
+    let pr_numbers: Vec<String> = output.split('\n').map(String::from).collect();
+    for num in pr_numbers {
+        let target_pr = &format!("{}/pulls/{}", repo, num);
+        let base_branch = &format!("base={}", to);
+        // gh api -X PATCH "repos/:owner/:repo/pulls/${num}" -f base="$newbranch"
+        println!("$ gh api -X PATCH {} -f {}", target_pr, base_branch);
+        gh(&["api", "-X", "PATCH", target_pr, "-f", base_branch]);
+    }
+    println!("All PR's base branch are updated!");
 }
 
 fn git(args: &[&str]) -> Output {
