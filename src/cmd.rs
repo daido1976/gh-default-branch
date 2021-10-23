@@ -29,10 +29,8 @@ pub fn rename(to_branch: &str) {
 pub fn help() {
     println!(
         "Usage: gh default-branch\n\n\
-
         Show default branch\n\
         $ gh default-branch show\n\n\
-
         Rename default branch\n\
         $ gh default-branch rename <name>"
     );
