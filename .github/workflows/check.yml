@@ -1,4 +1,4 @@
-name: Rust
+name: Check
 
 on:
   push:
@@ -16,5 +16,9 @@ jobs:
 
     steps:
     - uses: actions/checkout@v2
+    - uses: actions-rs/toolchain@v1
+      with:
+        toolchain: stable
+        components: rustfmt, clippy
     - name: Check
       run: cargo check --verbose
