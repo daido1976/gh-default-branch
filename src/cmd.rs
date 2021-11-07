@@ -142,11 +142,11 @@ fn delete_old_branch(branch: &str) {
     let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
     println!("{}", output);
 
-    // (Optional) Delete the local old branch.
-    // println!("$ git branch -D {}", branch);
-    // let output = git(&["branch", "-D", branch]);
-    // let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
-    // println!("{}", output);
+    // Delete the local old branch.
+    println!("$ git branch -D {}", branch);
+    let output = git(&["branch", "-D", branch]);
+    let output = String::from_utf8_lossy(&output.stderr).trim().to_string();
+    println!("{}", output);
 }
 
 fn git(args: &[&str]) -> Output {
