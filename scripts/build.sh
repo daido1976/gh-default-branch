@@ -12,4 +12,4 @@ case "$OSTYPE" in
     ;;
 esac
 
-mv target/release/gh-report "./dist/$EXECUTABLE"
+mv target/release/gh-default-branch "./dist/$EXECUTABLE"
