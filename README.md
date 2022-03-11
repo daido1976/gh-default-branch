@@ -45,6 +45,6 @@ $ gh default-branch -h
 ## Release
 
 ```sh
-$ ./release.sh <version(e.g.`v0.1`)>
-# And please update the tag version in `gh-default-branch` file to <version>.
+$ git tag <version(e.g.`v0.1`)>
+$ git push --tag
 ```
