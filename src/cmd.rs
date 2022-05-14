@@ -26,16 +26,6 @@ pub fn rename(to_branch: &str) {
     );
 }
 
-pub fn help() {
-    println!(
-        "Usage: gh default-branch\n\n\
-        Show default branch\n\
-        $ gh default-branch show\n\n\
-        Rename default branch\n\
-        $ gh default-branch rename <name>"
-    );
-}
-
 /// e.g. daido1976/gh-default-branch
 fn get_repo_name_with_owner() -> String {
     // gh repo view --json nameWithOwner --jq .nameWithOwner
