@@ -44,6 +44,10 @@ $ gh default-branch -h
 
 ## Release
 
+This extension is released as a precompiled extension.
+
+See. https://docs.github.com/en/github-cli/github-cli/creating-github-cli-extensions#creating-a-precompiled-extension-manually
+
 ```sh
 $ git tag <version(e.g.`v0.1`)>
 $ git push --tag

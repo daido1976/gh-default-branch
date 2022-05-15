@@ -1,0 +1,6 @@
+#!/bin/bash
+set -e
+
+# for debug
+cargo build --release
+target/release/gh-default-branch "$@"
