@@ -2,7 +2,7 @@ mod cmd;
 use clap::{Parser, Subcommand};
 
 #[derive(Debug, Parser)]
-#[clap(name = "gh default-branch")]
+#[clap(name = "gh default-branch", version)]
 #[clap(about = "GitHub CLI extension to show & rename the default branch", long_about = None)]
 struct Cli {
     #[clap(subcommand)]
