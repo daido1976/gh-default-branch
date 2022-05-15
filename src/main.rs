@@ -31,7 +31,7 @@ fn run() {
 
     match cli.command {
         Commands::Show { name } => {
-            cmd::show();
+            cmd::show(name);
         }
         Commands::Rename { name } => cmd::rename(&name),
     }
