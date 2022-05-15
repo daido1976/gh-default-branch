@@ -1,22 +1,33 @@
 mod cmd;
-use std::env;
+use clap::{Parser, Subcommand};
 
-fn main() {
-    let args: Vec<String> = env::args().collect();
-    run(args)
+#[derive(Debug, Parser)]
+#[clap(name = "gh default-branch", version, about, long_about = None)]
+struct Cli {
+    #[clap(subcommand)]
+    command: Commands,
 }
 
-fn run(args: Vec<String>) {
-    match args.get(1) {
-        Some(first) if first == "show" => cmd::show(),
-        Some(first) if first == "rename" => {
-            if let Some(to_name) = args.get(2) {
-                cmd::rename(to_name)
-            } else {
-                println!("USAGE: 'gh default-branch rename <name>' Please specify the name.")
-            }
+#[derive(Debug, Subcommand)]
+enum Commands {
+    /// Show default branch
+    Show {
+        /// Show only the branch name (e.g. main)
+        #[clap(short, long)]
+        name_only: bool,
+    },
+    /// Rename default branch
+    #[clap(arg_required_else_help = true)]
+    Rename { name: String },
+}
+
+fn main() {
+    let cli = Cli::parse();
+
+    match cli.command {
+        Commands::Show { name_only } => {
+            cmd::show(name_only);
         }
-        // when passed no args, or the wrong args.
-        _ => cmd::help(),
+        Commands::Rename { name } => cmd::rename(&name),
     }
 }

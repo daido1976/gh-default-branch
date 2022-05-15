@@ -1,9 +1,13 @@
 use std::process::{Command, Output};
 
-pub fn show() {
+pub fn show(name_only: bool) {
     let repo_name_with_owner = get_repo_name_with_owner();
     let default_branch = get_default_branch(&repo_name_with_owner);
-    println!("Current default branch is \"{}\"", default_branch,);
+    if name_only {
+        println!("{}", default_branch)
+    } else {
+        println!("Current default branch is \"{}\"", default_branch);
+    }
 }
 
 // TODO: Make it interactive because this is a command with a lot of side effects.
@@ -23,16 +27,6 @@ pub fn rename(to_branch: &str) {
     println!(
         "=== FINISH: Rename from {} to {} ===",
         from_branch, to_branch
-    );
-}
-
-pub fn help() {
-    println!(
-        "Usage: gh default-branch\n\n\
-        Show default branch\n\
-        $ gh default-branch show\n\n\
-        Rename default branch\n\
-        $ gh default-branch rename <name>"
     );
 }
 
