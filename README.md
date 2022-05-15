@@ -46,6 +46,8 @@ $ gh default-branch rename <NAME>
 
 ### Debug
 
+Debug with [gh-default-branch](https://github.com/daido1976/gh-default-branch/blob/main/gh-default-branch) script.
+
 ```sh
 $ gh extension install .
 $ gh default-branch <SUBCOMMAND>
