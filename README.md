@@ -33,16 +33,56 @@ $ gh extension install daido1976/gh-default-branch
 
 ```sh
 $ gh default-branch -h
-# Usage: gh default-branch
+# gh default-branch 0.6.0
+# GitHub CLI extension to show & rename the default branch
 #
+# USAGE:
+#     gh-default-branch <SUBCOMMAND>
+#
+# OPTIONS:
+#     -h, --help       Print help information
+#     -V, --version    Print version information
+#
+# SUBCOMMANDS:
+#     help      Print this message or the help of the given subcommand(s)
+#     rename    Rename default branch
+#     show      Show default branch
+
+$ gh default-branch show -h
+# gh-default-branch-show
 # Show default branch
-# $ gh default-branch show
 #
+# USAGE:
+#     gh-default-branch show [OPTIONS]
+#
+# OPTIONS:
+#     -h, --help         Print help information
+#     -n, --name-only    Show only the branch name (e.g. main)
+
+$ gh default-branch rename -h
+# gh-default-branch-rename
 # Rename default branch
-# $ gh default-branch rename <name>
+#
+# USAGE:
+#     gh-default-branch rename <NAME>
+#
+# ARGS:
+#     <NAME>
+#
+# OPTIONS:
+#     -h, --help    Print help information
 ```
 
-## Release
+## Development
+
+### Debug
+
+```sh
+$ gh extension install .
+$ gh default-branch <SUBCOMMAND>
+```
+
+### Release
 
 This extension is released as a precompiled extension.
 
