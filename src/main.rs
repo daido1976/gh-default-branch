@@ -15,7 +15,7 @@ enum Commands {
     Show {
         /// Show only the branch name (e.g. main)
         #[clap(short, long)]
-        name: bool,
+        name_only: bool,
     },
     /// Rename default branch
     #[clap(arg_required_else_help = true)]
@@ -23,15 +23,11 @@ enum Commands {
 }
 
 fn main() {
-    run()
-}
-
-fn run() {
     let cli = Cli::parse();
 
     match cli.command {
-        Commands::Show { name } => {
-            cmd::show(name);
+        Commands::Show { name_only } => {
+            cmd::show(name_only);
         }
         Commands::Rename { name } => cmd::rename(&name),
     }
