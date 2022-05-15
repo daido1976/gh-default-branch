@@ -32,45 +32,14 @@ $ gh extension install daido1976/gh-default-branch
 ## Usage
 
 ```sh
-$ gh default-branch -h
-# gh default-branch 0.6.0
-# GitHub CLI extension to show & rename the default branch
-#
-# USAGE:
-#     gh-default-branch <SUBCOMMAND>
-#
-# OPTIONS:
-#     -h, --help       Print help information
-#     -V, --version    Print version information
-#
-# SUBCOMMANDS:
-#     help      Print this message or the help of the given subcommand(s)
-#     rename    Rename default branch
-#     show      Show default branch
+# Show the default branch
+$ gh default-branch show
 
-$ gh default-branch show -h
-# gh-default-branch-show
-# Show default branch
-#
-# USAGE:
-#     gh-default-branch show [OPTIONS]
-#
-# OPTIONS:
-#     -h, --help         Print help information
-#     -n, --name-only    Show only the branch name (e.g. main)
+# Show just the name of the default branch (e.g. main)
+$ gh default-branch show -n # or --name-only
 
-$ gh default-branch rename -h
-# gh-default-branch-rename
-# Rename default branch
-#
-# USAGE:
-#     gh-default-branch rename <NAME>
-#
-# ARGS:
-#     <NAME>
-#
-# OPTIONS:
-#     -h, --help    Print help information
+# Rename the default branch
+$ gh default-branch rename <NAME>
 ```
 
 ## Development
@@ -86,9 +55,7 @@ $ gh default-branch <SUBCOMMAND>
 
 This extension is released as a precompiled extension.
 
-See. https://docs.github.com/en/github-cli/github-cli/creating-github-cli-extensions#creating-a-precompiled-extension-manually
-
 ```sh
-$ git tag <version(e.g.`v0.1`)>
+$ git tag <version(e.g.`v0.1.0`)>
 $ git push --tag
 ```
