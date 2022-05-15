@@ -1,4 +1,5 @@
 [package]
+description = "GitHub CLI extension to show & rename the default branch"
 edition = "2021"
 name = "gh-default-branch"
 version = "0.6.0"
