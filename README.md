@@ -46,6 +46,8 @@ $ gh default-branch rename <NAME>
 
 ### Debug
 
+Debug with [gh-default-branch](https://github.com/daido1976/gh-default-branch/blob/main/gh-default-branch) script.
+
 ```sh
 $ gh extension install .
 $ gh default-branch <SUBCOMMAND>
@@ -53,7 +55,7 @@ $ gh default-branch <SUBCOMMAND>
 
 ### Release
 
-This extension is released as a precompiled extension.
+This extension is released as a [precompiled extension](https://docs.github.com/en/github-cli/github-cli/creating-github-cli-extensions#creating-a-precompiled-extension-manually).
 
 ```sh
 $ git tag <version(e.g.`v0.1.0`)>
